@@ -15,12 +15,15 @@ const Curves = (function (){
     }
 
     function Anguinea(t,a=.4,d=.4){
+       if(t<-Math.PI || t>Math.PI) return [null,null];
        return [d*tan(t/2),a/2*sin(t)];
     }
     Anguinea.dot = function(t,a=.4,d=.4){
+       if(t<-Math.PI || t>Math.PI) return [null,null];
        return [d/(2*pow(cos(t/2),2)), a/2*cos(t)];
     }
     Anguinea.dotdot = function(t,a=.4,d=.4){
+       if(t<-Math.PI || t>Math.PI) return [null,null];
        return [1/2*d*1/pow(cos(t/2),2)*tan(t/2), -a/2*sin(t)];
     }
     Anguinea.evolute = EvoluteFor(Anguinea);
