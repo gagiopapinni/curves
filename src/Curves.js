@@ -1,6 +1,6 @@
 const Curves = (function () {
         const {pow, sin, cos, asin, sqrt, sign, tan} = Math;
-
+        console.log(math.sqrt(4));
         function EvoluteFor(curve) {
             return (s) => {
                 let c = curve,
@@ -69,12 +69,16 @@ const Curves = (function () {
                 y: 1 * cos(t)
             }
         }
-
+        Ellipse.func = {
+            x: '1.5*sin(t)',
+            y: '1*cos(t)'
+        }
         Ellipse.derivative = function (t) {
             return {
-                x: 1.5 * cos(t),
-                y: -sin(t)
-            }
+                x: math.derivative(this.func.x, 't').evaluate({t:t}),
+                y: math.derivative(this.func.y, 't').evaluate({t:t}),
+
+        }
         }
 
         Ellipse.secondDerivative = function (t) {

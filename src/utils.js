@@ -39,7 +39,7 @@ function plot(cvs, src, ops = {}, domain = currentCurve.domain) {
     let ctx = cvs.getContext('2d');
     ctx.translate(cvs.width / 2, cvs.height / 2);
     ctx.beginPath();
-
+    let size = $('#size').val();
     if (typeof src === 'function') {
         let fn = src;
         let first = true;
@@ -48,8 +48,8 @@ function plot(cvs, src, ops = {}, domain = currentCurve.domain) {
 
             if (res.x === null || res.y === null) continue;
 
-            x = res.x * cvs.width / domain[1];
-            y = res.y * cvs.width / domain[1];
+            x = res.x * cvs.width*size / domain[1];
+            y = -res.y * cvs.width*size / domain[1];
 
             if (first) {
                 ctx.moveTo(x, y);
@@ -62,8 +62,8 @@ function plot(cvs, src, ops = {}, domain = currentCurve.domain) {
         for (let i = 0; i < tbl.length; i++) {
             let x = tbl[i].x, y = tbl[i].y;
 
-            x = x * cvs.width / domain[1];
-            y = y * cvs.width / domain[1];
+            x = x * cvs.width*size / domain[1];
+            y = -y * cvs.width*size / domain[1];
 
             if (first) {
                 ctx.moveTo(x, y);
