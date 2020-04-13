@@ -1,61 +1,85 @@
-
-let Vector = {
-     normalize: v => {
-          let len = Math.sqrt( Math.pow(v[0],2)+Math.pow(v[1],2) );
-          return [v[0]/len,v[1]/len];
-     },
-     size: v => Math.sqrt( Math.pow(v[0],2)+Math.pow(v[1],2) ),
-     add: (v1,v2) => [v1[0]+v2[0],v1[1]+v2[1]],
-     dist: (v1,v2) => Vector.size( [ v2[0]-v1[0], v2[1]-v1[1] ] ),
+const Vector = {
+    normalize: v => {
+        let x = v.x,
+            y = v.y;
+        let len = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        return {
+            x: x / len,
+            y: y / len
+        };
+    },
+    size: v => {
+        let x = v.x,
+            y = v.y;
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
+    },
+    add: (v1, v2) => {
+        return {
+            x: v1.x + v2.x,
+            y: v1.y + v2.y
+        }
+    },
+    dist: (v1, v2) => {
+        return Vector.size({
+            x: v2.x - v1.x,
+            y: v2.y - v1.y
+        })
+    },
 }
 
-function clear(cvs){
-    let ctx = cvs.getContext('2d'); 
-    ctx.fillStyle='white';
-    ctx.fillRect(0,0,cvs.width,cvs.height);    
+function clear(...cvs) {
+    for (let canvas of cvs) {
+        let ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 }
 
-function plot(cvs,src,domain,ops = {}){
+function plot(cvs, src, ops = {}, domain = currentCurve.domain) {
     let ctx = cvs.getContext('2d');
-    ctx.translate(cvs.width/2,cvs.height/2);
+    ctx.translate(cvs.width / 2, cvs.height / 2);
     ctx.beginPath();
-    
-
-    if(typeof src === 'function'){
+    let size = $('#size').val();
+    if (typeof src === 'function') {
         let fn = src;
         let first = true;
-        for(let i = domain[0];i<=domain[1];i+=.01){
-            let x,y, res = fn(i);
+        for (let i = domain[0]; i <= domain[1]; i += .01) {
+            let x, y, res = fn(i);
 
-            if(!Array.isArray(res)) res = [i,res];
-            if(res[0]===null || res[1]===null) continue;
+            if (res.x === null || res.y === null) continue;
 
-            x = res[0] * cvs.width/domain[1];
-            y = res[1] * cvs.width/domain[1];
+            x = res.x * cvs.width*size / domain[1];
+            y = -res.y * cvs.width*size / domain[1];
 
-            if(first){ ctx.moveTo(x,y); first = false; }
-            else ctx.lineTo(x,y);
+            if (first) {
+                ctx.moveTo(x, y);
+                first = false;
+            } else ctx.lineTo(x, y);
         }
-
-    }
-    else{  
+    } else {
         let tbl = src;
         let first = true;
-        for(let i = 0;i<tbl.length;i++){
-            let x = tbl[i][0], y = tbl[i][1];
+        for (let i = 0; i < tbl.length; i++) {
+            let x = tbl[i].x, y = tbl[i].y;
 
-            x = x * cvs.width/domain[1];
-            y = y * cvs.width/domain[1];
+            x = x * cvs.width*size / domain[1];
+            y = -y * cvs.width*size / domain[1];
 
-            if(first){ ctx.moveTo(x,y); first = false; }
-            else ctx.lineTo(x,y);
+            if (first) {
+                ctx.moveTo(x, y);
+                first = false;
+            } else ctx.lineTo(x, y);
         }
     }
-
 
     ctx.strokeStyle = ops.color || "red";
     ctx.lineWidth = ops.lineWidth || 2;
     ctx.stroke();
-    ctx.translate(-cvs.width/2,-cvs.height/2);
+    ctx.translate(-cvs.width / 2, -cvs.height / 2);
+}
 
+function multiDraw(canvas, ...args){
+    for(let drawOpt of args){
+        plot(canvas, ...drawOpt);
+    }
 }
