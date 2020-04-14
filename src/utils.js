@@ -35,7 +35,7 @@ function clear(...cvs) {
     }
 }
 
-function plot(cvs, src, ops = {}, domain = currentCurve.domain) {
+function plot(cvs, src, ops = {}, domain) {
     let ctx = cvs.getContext('2d');
     ctx.translate(cvs.width / 2, cvs.height / 2);
     ctx.beginPath();
